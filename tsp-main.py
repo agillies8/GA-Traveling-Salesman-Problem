@@ -1,7 +1,7 @@
 # this follows the example project here: https://towardsdatascience.com/evolution-of-a-salesman-a-complete-genetic-algorithm-tutorial-for-python-6fe5d2b3ca35
 #basically just followed this all the way thru to get a feel for how it works.
 
-import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as pyplot
+import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as plt
 
 
 #city class to create and handle cities, also method to return distance to another city
@@ -15,9 +15,6 @@ class City:
         yDis = abs(self.y-city.y)
         distance = np.sqrt((xDis**2) + (yDis**2))
         return distance
-
-    def __repr__(self):
-        return "(" + str(self.x)+ "," + str(self.y + ")"
 
 #fitness class to determine route length and fitness of an individual solution
 class Fitness:
@@ -72,7 +69,7 @@ def selection(popRanked, eliteSize):
 
     for i in range(0, eliteSize):
         selectionResults.append(popRanked[i][0])   #this automatically picks the top routes to be sure to include them for mating
-    for i in range(0, len(popRanked) - eliteSize) #the rest are selected based on randomly selected cutoff criteria. ie, mating pool size changes each time.
+    for i in range(0, len(popRanked) - eliteSize): #the rest are selected based on randomly selected cutoff criteria. ie, mating pool size changes each time.
         pick = 100*random.random()
         for i in range(0, len(popRanked)):
             if pick <= df.iat[i,3]:
@@ -82,7 +79,7 @@ def selection(popRanked, eliteSize):
 
 def matingPool(population, selectionResults): #just generates the actual mating pool array from the selection results output
     matingpool = []
-    for i in range(0, len(selectionRsults)):
+    for i in range(0, len(selectionResults)):
         index = selectionResults[i]
         matingpool.append(population[index])
     return matingpool
@@ -131,7 +128,7 @@ def mutate(individual, mutationRate):
 
             individual[swapped] = city2
             individual[swapWith] = city1
-return individual
+    return individual
 
 #cycle thru population and perform individual mutation function on each one
 def mutatePopulation(population, mutationRate):
@@ -157,14 +154,14 @@ def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
     for i in range(0, generations):
         pop = nextGeneration(pop,eliteSize, mutationRate)
 
-    print("Final distance: " = str(1 / rankRoutes(pop)[0][1]) )
+    print("Final distance: " + str(1 / rankRoutes(pop)[0][1]) )
     bestRouteIndex = rankRoutes(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
     return bestRoute
 
 def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations): #if you want to plot the results
     pop = initialPopulation(popSize, population)
-
+    print("initial distance: " + str(1/rankRoutes(pop)[0][1]))
     progress = []
     progress.append(1/rankRoutes(pop)[0][1])
 
@@ -172,10 +169,12 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
         pop = nextGeneration(pop,eliteSize, mutationRate)
         progress.append(1/rankRoutes(pop)[0][1])
 
+
+    print("Final distance: " + str(1 / rankRoutes(pop)[0][1]) )
     plt.plot(progress)
     plt.ylabel('Distance')
     plt.xlabel('Generation')
-    plt.show
+    plt.show()
 
 
 
@@ -184,7 +183,7 @@ cityList = []
 for i in range(0,25):
     cityList.append(City(x=int(random.random()*200), y=int(random.random()*200)))
 
-geneticAlgorithm(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
+geneticAlgorithmPlot(population=cityList, popSize=100, eliteSize=20, mutationRate=0.01, generations=500)
 
 
 
